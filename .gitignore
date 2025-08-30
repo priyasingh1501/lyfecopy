@@ -1,2 +1,10 @@
 node_modules
 .vercel
+
+# Mobile (Expo) specific
+mobile/node_modules/
+mobile/.expo/
+mobile/.expo-shared/
+mobile/dist/
+mobile/coverage/
+mobile/test-results/
