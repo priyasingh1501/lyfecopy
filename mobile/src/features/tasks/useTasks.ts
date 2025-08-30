@@ -10,7 +10,7 @@ import {
   Task,
   CreateTaskData,
   TasksResponse,
-} from '../api/tasks';
+} from '../../api/tasks';
 
 // Query keys for consistent caching
 export const taskKeys = {
@@ -70,8 +70,8 @@ export function useCreateTask() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createTask,
-    onSuccess: (newTask) => {
+    mutationFn: (taskData: CreateTaskData) => createTask(taskData),
+    onSuccess: (newTask: Task) => {
       // Invalidate and refetch task lists
       queryClient.invalidateQueries({ queryKey: taskKeys.lists() });
       queryClient.invalidateQueries({ queryKey: taskKeys.stats() });
@@ -94,7 +94,7 @@ export function useUpdateTask() {
   return useMutation({
     mutationFn: ({ taskId, updates }: { taskId: string; updates: Partial<CreateTaskData> }) =>
       updateTask(taskId, updates),
-    onSuccess: (updatedTask) => {
+    onSuccess: (updatedTask: Task) => {
       // Update the specific task in cache
       queryClient.setQueryData(taskKeys.detail(updatedTask._id), updatedTask);
 
@@ -115,7 +115,7 @@ export function useDeleteTask() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteTask,
+    mutationFn: (taskId: string) => deleteTask(taskId),
     onSuccess: (_, taskId) => {
       // Remove the task from cache
       queryClient.removeQueries({ queryKey: taskKeys.detail(taskId) });
@@ -137,7 +137,7 @@ export function useToggleTaskStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: toggleTaskStatus,
+    mutationFn: (taskId: string) => toggleTaskStatus(taskId),
     onMutate: async (taskId: string) => {
       // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: taskKeys.detail(taskId) });
@@ -156,7 +156,7 @@ export function useToggleTaskStatus() {
 
       return { previousTask };
     },
-    onSuccess: (updatedTask) => {
+    onSuccess: (updatedTask: Task) => {
       // Update with server response
       queryClient.setQueryData(taskKeys.detail(updatedTask._id), updatedTask);
       queryClient.invalidateQueries({ queryKey: taskKeys.lists() });

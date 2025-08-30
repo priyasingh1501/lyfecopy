@@ -186,7 +186,7 @@ export default function TaskDetailScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Tags</Text>
           <View style={styles.tagsContainer}>
-            {task.tags.map((tag, index) => (
+            {task.tags.map((tag: string, index: number) => (
               <View key={index} style={styles.tag}>
                 <Text style={styles.tagText}>{tag}</Text>
               </View>

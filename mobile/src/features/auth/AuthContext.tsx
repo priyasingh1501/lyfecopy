@@ -10,7 +10,7 @@ import {
   User,
   LoginCredentials,
   RegisterData 
-} from '../api/auth';
+} from '../../api/auth';
 
 interface AuthContextType {
   user: User | null;
